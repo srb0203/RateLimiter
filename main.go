@@ -6,10 +6,13 @@ import (
 	"net/http"
 )
 
+var numberOfRequests = 2 //total number of requests allowed
+var timeLimit = 10.0     //time limit in seconds
+
 func main() {
 	fmt.Println("Application has been started on : 8050")
 	http.HandleFunc("/hello", Index)
-	log.Fatal(http.ListenAndServe(":8050", rateLimit(nil)))
+	log.Fatal(http.ListenAndServe(":8050", rateLimit(nil, numberOfRequests, timeLimit)))
 }
 
 //Index : hello world example to make GET request to

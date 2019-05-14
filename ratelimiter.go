@@ -7,10 +7,8 @@ import (
 )
 
 var globalMap = safeConcurrentMap{value: make(map[string]mapElement)}
-var numberOfRequests = 2 //limit in seconds
-var timeLimit = 10.0
 
-func limitExceeded(ipAddr string) bool {
+func limitExceeded(ipAddr string, numberOfRequests int, timeLimit float64) bool {
 	fmt.Println("ipAddr: " + ipAddr)
 
 	firstRequestTime := globalMap.get(ipAddr).firstRequestTime
@@ -50,24 +48,24 @@ func getUserIPAddress(r *http.Request) string {
 	return IPAddress
 }
 
-func initializeIPInMap(ipAddr string, t time.Time) {
+func initializeIPInMap(ipAddr string, t time.Time, numberOfRequests int) {
 	var me mapElement
 	me.firstRequestTime = t
 	me.credits = numberOfRequests
 	globalMap.set(ipAddr, me)
 }
 
-func rateLimit(h http.HandlerFunc) http.HandlerFunc {
+func rateLimit(h http.HandlerFunc, numberOfRequests int, timeLimit float64) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ipAddr := getUserIPAddress(r)
 		t := time.Now()
 
 		//First request from this IP, initialize variables
 		if !globalMap.get(ipAddr).firstRequestFromIP {
-			initializeIPInMap(ipAddr, t)
+			initializeIPInMap(ipAddr, t, numberOfRequests)
 		}
 
-		if limitExceeded(ipAddr) {
+		if limitExceeded(ipAddr, numberOfRequests, timeLimit) {
 			w.WriteHeader(http.StatusTooManyRequests)
 			w.Header().Set("Content-Type", "application/json")
 			fmt.Fprintf(w, string("Too many requests, please try again in %f seconds"),
