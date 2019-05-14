@@ -10,8 +10,8 @@ import (
 	"time"
 )
 
-var testNumberOfRequests = 2 //limit in seconds
-var testTimeLimit = 10.0
+var testNumberOfRequests = 2 //total number of requests allowed
+var testTimeLimit = 10.0     //time limit in seconds
 
 func makeRequest(t *testing.T, ts *httptest.Server) string {
 	res, err := http.Get(ts.URL)
