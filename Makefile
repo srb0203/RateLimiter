@@ -6,5 +6,8 @@ build:
 test:
 	go test ./... -v
 
+clean:
+	go clean
+
 image:
 	docker build -t cirocosta/l7 .
