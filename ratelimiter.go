@@ -33,20 +33,13 @@ func limitExceeded(ipAddr string) bool {
 	}
 
 	if globalMap.get(ipAddr).credits < 0 {
-		//var m mapElement
-		//m.credits = 0
-		//m.firstRequestFromIP = true
-		//m.firstRequestTime = globalMap.get(ipAddr).firstRequestTime
-		//m.timeRemaining = timeLimit - duration.Seconds()
-		//globalMap.set(ipAddr, m)
 		return true
 	}
-
 	return false
 }
 
 //GetUserIPAddress : find user IP address from the request
-func GetUserIPAddress(r *http.Request) string {
+func getUserIPAddress(r *http.Request) string {
 	IPAddress := r.Header.Get("X-Real-Ip")
 	if IPAddress == "" {
 		IPAddress = r.Header.Get("X-Forwarded-For")
@@ -66,7 +59,7 @@ func initializeIPInMap(ipAddr string, t time.Time) {
 
 func rateLimit(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		ipAddr := GetUserIPAddress(r)
+		ipAddr := getUserIPAddress(r)
 		t := time.Now()
 
 		//First request from this IP, initialize variables
