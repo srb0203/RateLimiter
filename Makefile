@@ -10,4 +10,7 @@ clean:
 	go clean
 
 image:
-	docker build -t cirocosta/l7 .
+	docker build -t ratelimiter .
+
+image-run:
+	docker run -p 8050:8050 ratelimiter
