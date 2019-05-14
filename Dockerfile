@@ -1,18 +1,12 @@
-############################
-# STEP 1 build executable binary
-############################
+# Build a binary
 FROM golang:alpine AS builder
-
 WORKDIR $GOPATH/src/mypackage/myapp/
 COPY . .
-
 RUN go build -o /go/bin/ratelimiter
-############################
-# STEP 2 build a small image
-############################
-FROM alpine
-# Copy our static executable.
-COPY --from=builder /go/bin/ratelimiter /go/bin/ratelimiter 
 
-# Run the hello binary.
+#Build a smaller image from previous binary
+FROM alpine
+# Copy the executable.
+COPY --from=builder /go/bin/ratelimiter /go/bin/ratelimiter 
+# Run the binary.
 ENTRYPOINT ["/go/bin/ratelimiter"]
