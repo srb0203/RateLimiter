@@ -8,16 +8,23 @@ import (
 
 var globalMap = safeConcurrentMap{value: make(map[string]mapElement)}
 
+// limitExceeded : checks if the limit has been exceeded, by checking against the
+// time of the first request. If the first request was made more than the time limit time agoa
+// then the first request time is updated to latest request's time
 func limitExceeded(ipAddr string, numberOfRequests int, timeLimit float64) bool {
 	fmt.Println("ipAddr: " + ipAddr)
 
 	firstRequestTime := globalMap.get(ipAddr).firstRequestTime
-	duration := time.Now().Sub(firstRequestTime)
+	duration := time.Now().Sub(firstRequestTime) //time difference between now and when the first request was made.
 
 	if duration.Seconds() <= timeLimit {
 		var m mapElement
 		m.firstRequestFromIP = true
-		m.credits = globalMap.get(ipAddr).credits - 1
+		if globalMap.get(ipAddr).credits > 0 {
+			m.credits = globalMap.get(ipAddr).credits - 1
+		} else {
+			m.credits = -1
+		}
 		m.firstRequestTime = globalMap.get(ipAddr).firstRequestTime
 		m.timeRemaining = timeLimit - duration.Seconds()
 		globalMap.set(ipAddr, m)
@@ -36,7 +43,7 @@ func limitExceeded(ipAddr string, numberOfRequests int, timeLimit float64) bool 
 	return false
 }
 
-//GetUserIPAddress : find user IP address from the request
+//getUserIPAddress : find user IP address from the request
 func getUserIPAddress(r *http.Request) string {
 	IPAddress := r.Header.Get("X-Real-Ip")
 	if IPAddress == "" {
@@ -48,6 +55,8 @@ func getUserIPAddress(r *http.Request) string {
 	return IPAddress
 }
 
+// initialize variables in the global map when a request is made for the first
+// time from the given ip address
 func initializeIPInMap(ipAddr string, t time.Time, numberOfRequests int) {
 	var me mapElement
 	me.firstRequestTime = t
