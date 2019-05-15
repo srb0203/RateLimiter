@@ -8,6 +8,15 @@ Ratelimiter limits the number of calls to an HTTP API. It uses a credit based sy
 
 Dockerfile is provided to build a small docker image than can be deployed anywhere.
 
+# Usage
+
+Define the number of requests allowed and the total time.
+
+```golang
+var numberOfRequests = 2 //total number of requests allowed
+var timeLimit = 10.0     //time limit in seconds
+```
+
 # Build and Run
 
 Use the makefile to build the ratelimiter executable:
