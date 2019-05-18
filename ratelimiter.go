@@ -6,13 +6,13 @@ import (
 	"time"
 )
 
+//Global map to keep track of all the IPs and their request information
 var globalMap = safeConcurrentMap{value: make(map[string]mapElement)}
 
 // limitExceeded : checks if the limit has been exceeded, by checking against the
 // time of the first request. If the first request was made more than the time limit time agoa
 // then the first request time is updated to latest request's time
 func limitExceeded(ipAddr string, numberOfRequests int, timeLimit float64) bool {
-	fmt.Println("ipAddr: " + ipAddr)
 
 	firstRequestTime := globalMap.get(ipAddr).firstRequestTime
 	duration := time.Now().Sub(firstRequestTime) //time difference between now and when the first request was made.
