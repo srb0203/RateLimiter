@@ -6,12 +6,12 @@ import (
 	"net/http"
 )
 
-var numberOfRequests = 2 //total number of requests allowed
-var timeLimit = 10.0     //time limit in seconds
+var numberOfRequests = 100 //total number of requests allowed
+var timeLimit = 3600.0     //time limit in seconds
 
 func main() {
 	fmt.Println("Application has been started on : 8050")
-	http.HandleFunc("/hello", Index)
+	http.HandleFunc("/", Index)
 	log.Fatal(http.ListenAndServe(":8050", rateLimit(nil, numberOfRequests, timeLimit)))
 }
 

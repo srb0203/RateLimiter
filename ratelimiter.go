@@ -77,7 +77,7 @@ func rateLimit(h http.HandlerFunc, numberOfRequests int, timeLimit float64) http
 		if limitExceeded(ipAddr, numberOfRequests, timeLimit) {
 			w.WriteHeader(http.StatusTooManyRequests)
 			w.Header().Set("Content-Type", "application/json")
-			fmt.Fprintf(w, string("Too many requests, please try again in %f seconds"),
+			fmt.Fprintf(w, string("Rate limit exceeded. Try again in %f seconds"),
 				globalMap.get(ipAddr).timeRemaining)
 		} else {
 			if h == nil {
