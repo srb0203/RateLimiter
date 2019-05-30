@@ -31,6 +31,34 @@ Run the app using the following:
 ./ratelimiter
 ```
 
+# Run Tests
+
+Run the test file ratelimiter_test.go by running the following command:
+
+```bash
+go test -v
+```
+
+or
+
+```bash
+make test
+```
+
+# See test coverage
+
+First gnerate coverage file
+
+```bash
+make cover
+```
+
+then use the following command to generate coverage report in html format
+
+```bash
+make coverfile
+```
+
 # Build docker image
 
 Use the makefile to build the docker image:
