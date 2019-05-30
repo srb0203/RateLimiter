@@ -47,13 +47,13 @@ make test
 
 # See test coverage
 
-First gnerate coverage file
+First generate coverage file:
 
 ```bash
 make cover
 ```
 
-then use the following command to generate coverage report in html format
+then use the following command to generate coverage report in html format:
 
 ```bash
 make coverfile
