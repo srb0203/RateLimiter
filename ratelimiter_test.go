@@ -32,6 +32,7 @@ func TestMyHandler(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(rateLimit(Index, testNumberOfRequests, testTimeLimit)))
 	defer ts.Close()
 
+	//make get requests, test limit is 2
 	for i := 0; i < 2; i++ {
 		body := makeRequest(t, ts)
 		expected := "Hello World example for GET request.\n"
@@ -52,6 +53,7 @@ func TestMyHandler(t *testing.T) {
 		}
 	}
 
+	//sleep 10 seconds to simulate passing of rate limit time
 	time.Sleep(10 * time.Second)
 
 	for i := 0; i < 2; i++ {

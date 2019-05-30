@@ -19,7 +19,7 @@ func limitExceeded(ipAddr string, numberOfRequests int, timeLimit float64) bool 
 
 	if duration.Seconds() <= timeLimit {
 		var m mapElement
-		m.firstRequestFromIP = true
+		m.ipAlreadySeen = true
 		if globalMap.get(ipAddr).credits > 0 {
 			m.credits = globalMap.get(ipAddr).credits - 1
 		} else {
@@ -32,7 +32,7 @@ func limitExceeded(ipAddr string, numberOfRequests int, timeLimit float64) bool 
 		var m mapElement
 		m.credits = numberOfRequests - 1 //subtract current request served
 		m.firstRequestTime = time.Now()
-		m.firstRequestFromIP = true
+		m.ipAlreadySeen = true
 		m.timeRemaining = timeLimit - duration.Seconds()
 		globalMap.set(ipAddr, m)
 	}
@@ -70,7 +70,7 @@ func rateLimit(h http.HandlerFunc, numberOfRequests int, timeLimit float64) http
 		t := time.Now()
 
 		//First request from this IP, initialize variables
-		if !globalMap.get(ipAddr).firstRequestFromIP {
+		if !globalMap.get(ipAddr).ipAlreadySeen {
 			initializeIPInMap(ipAddr, t, numberOfRequests)
 		}
 

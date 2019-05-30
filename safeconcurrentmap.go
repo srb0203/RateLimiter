@@ -11,6 +11,7 @@ type safeConcurrentMap struct {
 	mux   sync.Mutex
 }
 
+//set the map element by first locking the map
 func (m *safeConcurrentMap) set(key string, val mapElement) {
 	m.mux.Lock()
 	m.value[key] = val
@@ -23,9 +24,10 @@ func (m *safeConcurrentMap) get(key string) mapElement {
 	return m.value[key]
 }
 
+//Map element to store values related to rate limitter
 type mapElement struct {
-	firstRequestTime   time.Time
-	credits            int
-	firstRequestFromIP bool
-	timeRemaining      float64
+	firstRequestTime time.Time
+	credits          int
+	ipAlreadySeen    bool
+	timeRemaining    float64
 }
